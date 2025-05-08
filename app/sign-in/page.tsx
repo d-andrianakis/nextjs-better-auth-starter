@@ -94,7 +94,7 @@ export default function SignIn() {
                     setLoading(false);
                   },
                   onSuccess: (ctx) => {
-                    router.push("/dashboard");
+                    console.log("ctx:", ctx);
                   }
                 },
                 );
