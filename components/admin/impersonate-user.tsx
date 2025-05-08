@@ -11,7 +11,6 @@ interface ImpersonateUserProps {
 
 export default function ImpersonateUser({ userId }: ImpersonateUserProps) {
 	const router = useRouter();
-	// const { toast } = useToast();
 
 	const handleImpersonateUser = async () => {
 		try {
