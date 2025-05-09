@@ -51,5 +51,13 @@ export const verification = pgTable("verification", {
  updatedAt: timestamp('updated_at')
 				});
 
+export const orders = pgTable("orders", {
+	id: text('id').primaryKey(),
+	identifier: text('identifier').notNull(),
+	value: text('value').notNull(),
+ 	createdAt: timestamp('created_at'),
+ 	updatedAt: timestamp('updated_at')
+});
 
-export const schema = { user, session, account, verification };
+
+export const schema = { user, session, account, verification, orders };
