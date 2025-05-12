@@ -1,7 +1,10 @@
 import UsersTable from "@/components/admin/users-table";
+// import OrdersTable from "@/components/admin/orders-table";
+import OrdersTables from "@/components/admin/orders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function AdminDashboard() {
+
 	return (
 		<main className="flex flex-col">
 			<div className="flex flex-col gap-4 max-w-7xl mx-auto w-full">
@@ -18,6 +21,14 @@ export default async function AdminDashboard() {
 					</CardHeader>
 					<CardContent>
 						<UsersTable />
+					</CardContent>
+				</Card>
+				<Card>
+					<CardHeader>
+						<CardTitle>Orders</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<OrdersTables />
 					</CardContent>
 				</Card>
 			</div>
