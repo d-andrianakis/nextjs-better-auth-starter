@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-import RemoveOrderButton from "./removeOrderAction";
+import RemoveOrderButton from "./removeOrder";
 
 export default function OrdersTableClient({ orders }) {
   // You can use useState, useEffect, etc. here
