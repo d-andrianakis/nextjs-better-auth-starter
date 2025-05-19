@@ -2,6 +2,7 @@
 
 import { db } from "@/db/drizzle";
 import { orders } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 import {
 	Table,
@@ -12,10 +13,20 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
-export default async function OrdersTables() {
+// import RemoveOrder from "./removeOrder";
+import { Button } from "@/components/ui/button";
+
+
+import OrdersTableClient from "./ordersTableClient";
+
+export default async function OrdersTablesServer() {
+
+    const response = await db.select().from(orders);
+
+    return <OrdersTableClient orders={response} />;
 
     try {
-        const response = await db.select().from(orders);
+        
         return (
             <Table>
 			<TableHeader>
@@ -25,6 +36,7 @@ export default async function OrdersTables() {
 					<TableHead>Identifier</TableHead>
 					<TableHead>Created at</TableHead>
 					<TableHead>Updated at</TableHead>
+                    <TableHead>Remove</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -38,6 +50,12 @@ export default async function OrdersTables() {
                     </TableCell>
                     <TableCell>
                         {new Date(order.updatedAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                        {/* <Button onClick={handleRemoveOrder} variant="outline" size="sm">
+                            Delete
+                        </Button> */}
+                        {/* <RemoveOrderButton orderId={order.id} /> */}
                     </TableCell>
                 </TableRow>
                 ))}

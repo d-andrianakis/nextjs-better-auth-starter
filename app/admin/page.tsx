@@ -1,7 +1,8 @@
 import UsersTable from "@/components/admin/users-table";
 // import OrdersTable from "@/components/admin/orders-table";
-import OrdersTables from "@/components/admin/orders";
+import OrdersTablesServer from "@/components/admin/orders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CreateOrder } from "@/components/admin/create-order";
 
 export default async function AdminDashboard() {
 
@@ -26,9 +27,10 @@ export default async function AdminDashboard() {
 				<Card>
 					<CardHeader>
 						<CardTitle>Orders</CardTitle>
+						<CreateOrder />
 					</CardHeader>
 					<CardContent>
-						<OrdersTables />
+						<OrdersTablesServer />
 					</CardContent>
 				</Card>
 			</div>
