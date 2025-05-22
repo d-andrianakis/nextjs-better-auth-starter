@@ -5,9 +5,19 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
+import { useCallback, useState } from "react";
 import RemoveOrderButton from "./removeOrder";
 
-export default function OrdersTableClient({ orders }) {
+
+export default function OrdersTableClient({ orders: initialOrders }) {
+  const [orders, setOrders] = useState(initialOrders);
+
+  const reloadOrders = useCallback(async () => {
+    const res = await fetch("/api/orders");
+    const data = await res.json();
+    setOrders(data);
+  }, []);
+
   // You can use useState, useEffect, etc. here
   return (
     <Table>
@@ -30,7 +40,7 @@ export default function OrdersTableClient({ orders }) {
             <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
             <TableCell>{new Date(order.updatedAt).toLocaleDateString()}</TableCell>
             <TableCell>
-              <RemoveOrderButton orderId={order.id} />
+              <RemoveOrderButton orderId={order.id} onRemoved={reloadOrders} />
             </TableCell>
           </TableRow>
         ))}
