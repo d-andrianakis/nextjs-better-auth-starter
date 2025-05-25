@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useCallback, useState } from "react";
 import RemoveOrderButton from "./removeOrder";
 
+import Link from "next/link";
 
 export default function OrdersTableClient({ orders: initialOrders }) {
   const [orders, setOrders] = useState(initialOrders);
@@ -28,6 +29,7 @@ export default function OrdersTableClient({ orders: initialOrders }) {
           <TableHead>Identifier</TableHead>
           <TableHead>Created at</TableHead>
           <TableHead>Updated at</TableHead>
+          <TableHead>Edit</TableHead>
           <TableHead>Remove</TableHead>
         </TableRow>
       </TableHeader>
@@ -39,6 +41,11 @@ export default function OrdersTableClient({ orders: initialOrders }) {
             <TableCell>{order.identifier}</TableCell>
             <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
             <TableCell>{new Date(order.updatedAt).toLocaleDateString()}</TableCell>
+            <TableCell>
+              <Button variant="outline" asChild>
+                <Link href={`/orders/edit/${order.id}`}>Edit Order</Link>
+              </Button>
+            </TableCell>
             <TableCell>
               <RemoveOrderButton orderId={order.id} onRemoved={reloadOrders} />
             </TableCell>

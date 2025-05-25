@@ -1,7 +1,7 @@
 // components/MyForm.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import { useParams } from 'next/navigation';
 
 const FormSchema = z.object({
   
@@ -41,29 +42,39 @@ const FormSchema = z.object({
   }),
 })
 
-export default function MyForm() {
+export default function EditOrder() {
+    const params = useParams();
+    const orderId = params.id as string;
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      id: undefined,
-      identifier: "",
-      value: undefined,
-      createdAt: undefined,
-      updatedAt: undefined,
-    },
-  })
+    console.log("Order ID from params:", orderId);
+
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+        id: undefined,
+        identifier: "",
+        value: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+        },
+    })
 
   const [formData, setFormData] = useState({ id: '', identifier: '', value: '', createdAt: new Date(), updatedAt: new Date() });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    async function fetchOrder() {
+      const res = await fetch(`/api/orders/${orderId}`);
+      const data = await res.json();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
+      // Convert date strings to Date objects
+      form.reset({
+        ...data,
+        createdAt: data.createdAt ? new Date(data.createdAt) : undefined,
+        updatedAt: data.updatedAt ? new Date(data.updatedAt) : undefined,
+      });
+    }
+    if (orderId) fetchOrder();
+  }, [orderId, form]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
@@ -75,6 +86,7 @@ export default function MyForm() {
       const result = await res.json();
       if (result.success) {
         console.log("Order created:", result.order);
+        // Optionally reset the form or show a success message
       } else {
         console.error("Failed to create order:", result.error);
       }

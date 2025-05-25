@@ -10,10 +10,19 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { redirect } from "next/navigation";
 
-export async function GET() {
-  const response = await db.select().from(orders);
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
 
-  return NextResponse.json(response);
+  console.log("Fetching order with ID:", params.id);
+
+  const orderId = params.id;
+  const result = await db.select().from(orders).where(eq(orders.id, orderId));
+  if (!result.length) {
+    return NextResponse.json({ error: "Order not found" }, { status: 404 });
+  }
+  return NextResponse.json(result[0]);
 }
 
 export async function POST(req: Request) {
