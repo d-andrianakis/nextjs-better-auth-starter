@@ -10,21 +10,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { redirect } from "next/navigation";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-
-  console.log("Fetching order with ID:", params.id);
-
-  const orderId = params.id;
-  const result = await db.select().from(orders).where(eq(orders.id, orderId));
-  if (!result.length) {
-    return NextResponse.json({ error: "Order not found" }, { status: 404 });
-  }
-  return NextResponse.json(result[0]);
-}
-
 export async function POST(req: Request) {
   const data = await req.json();
   // Adjust the fields as needed to match your orders schema

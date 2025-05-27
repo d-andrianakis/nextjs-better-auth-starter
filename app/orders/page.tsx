@@ -67,7 +67,7 @@ export default function MyForm() {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-      const res = await fetch("/api/orders", {
+      const res = await fetch("/api/createOrder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

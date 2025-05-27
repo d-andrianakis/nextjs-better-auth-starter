@@ -1,4 +1,3 @@
-// components/MyForm.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -27,7 +26,9 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
-import { useParams } from 'next/navigation';
+import { redirect, useParams } from 'next/navigation';
+import router from 'next/router';
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   
@@ -43,50 +44,50 @@ const FormSchema = z.object({
 })
 
 export default function EditOrder() {
-    const params = useParams();
-    const orderId = params.id as string;
+  const params = useParams();
+  const orderId = params.id as string;
 
-    console.log("Order ID from params:", orderId);
+  const router = useRouter();
 
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-        id: undefined,
-        identifier: "",
-        value: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
-        },
-    })
-
-  const [formData, setFormData] = useState({ id: '', identifier: '', value: '', createdAt: new Date(), updatedAt: new Date() });
+  const form = useForm<z.infer<typeof FormSchema>>({
+      resolver: zodResolver(FormSchema),
+      defaultValues: {
+          id: "",
+          identifier: "",
+          value: "",
+          createdAt: null,
+          updatedAt: null,
+      },
+  });
 
   useEffect(() => {
-    async function fetchOrder() {
-      const res = await fetch(`/api/orders/${orderId}`);
-      const data = await res.json();
+      async function fetchOrder() {
+          const result = await fetch(`/api/orders/edit/${orderId}/`);
+          
+          const data = await result.json();
 
-      // Convert date strings to Date objects
-      form.reset({
-        ...data,
-        createdAt: data.createdAt ? new Date(data.createdAt) : undefined,
-        updatedAt: data.updatedAt ? new Date(data.updatedAt) : undefined,
-      });
-    }
-    if (orderId) fetchOrder();
+          // Convert date strings to Date objects if needed
+          form.reset({
+              ...data,
+              createdAt: data.createdAt ? new Date(data.createdAt) : undefined,
+              updatedAt: data.updatedAt ? new Date(data.updatedAt) : undefined,
+          });
+      }
+      fetchOrder();
   }, [orderId, form]);
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmitEdittedForm(data: z.infer<typeof FormSchema>) {
     try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
+      const res = await fetch(`/api/orders/edit/${orderId}/`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+
       const result = await res.json();
+
       if (result.success) {
-        console.log("Order created:", result.order);
-        // Optionally reset the form or show a success message
+        router.push("/admin");
       } else {
         console.error("Failed to create order:", result.error);
       }
@@ -97,7 +98,7 @@ export default function EditOrder() {
 
   return (
     <Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-4 max-w-md mx-auto bg-white rounded-xl shadow-md" suppressHydrationWarning>
+    <form onSubmit={form.handleSubmit(onSubmitEdittedForm)} className="space-y-4 p-4 max-w-md mx-auto bg-white rounded-xl shadow-md" suppressHydrationWarning>
       <FormField
         control={form.control}
         name="id"
