@@ -30,6 +30,8 @@ import { redirect, useParams } from 'next/navigation';
 import router from 'next/router';
 import { useRouter } from "next/navigation";
 
+import { getOrder } from '@/components/admin/actions/getOrder';
+
 const FormSchema = z.object({
   
   id: z.string().min(1, "Id is required"),
@@ -62,9 +64,11 @@ export default function EditOrder() {
 
   useEffect(() => {
       async function fetchOrder() {
-          const result = await fetch(`/api/orders/edit/${orderId}/`);
+          // const result = await fetch(`/api/orders/edit/${orderId}/`);
           
-          const data = await result.json();
+          // const data = await result.json();
+
+          const data = await getOrder(orderId);
 
           // Convert date strings to Date objects if needed
           form.reset({
