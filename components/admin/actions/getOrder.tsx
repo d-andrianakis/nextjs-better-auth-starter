@@ -11,5 +11,10 @@ export async function getOrder( id: string ) {
     if (!result.length) {
         return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
-    return NextResponse.json(result[0]);
+    const order = result[0];
+    return {
+        ...order,
+        createdAt: order.createdAt ? order.createdAt.toISOString() : null,
+        updatedAt: order.updatedAt ? order.updatedAt.toISOString() : null,
+    };
 }
