@@ -5,6 +5,9 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import EditOrderForm from "./editOrderForm";
+
 import { useCallback, useState } from "react";
 import RemoveOrderButton from "./removeOrder";
 
@@ -12,12 +15,20 @@ import Link from "next/link";
 
 export default function OrdersTableClient({ orders: initialOrders }) {
   const [orders, setOrders] = useState(initialOrders);
+  const [onUpdated, setOnUpdated] = useState(false);
 
   const reloadOrders = useCallback(async () => {
     const res = await fetch("/api/orders");
     const data = await res.json();
     setOrders(data);
   }, []);
+
+
+  const handleOrderUpdated = async () => {
+    await reloadOrders();
+    console.log("Order updated, reloading orders...");
+    setOnUpdated(flag => !flag); // Toggle the state
+  };
 
   // You can use useState, useEffect, etc. here
   return (
@@ -29,6 +40,7 @@ export default function OrdersTableClient({ orders: initialOrders }) {
           <TableHead>Identifier</TableHead>
           <TableHead>Created at</TableHead>
           <TableHead>Updated at</TableHead>
+          <TableHead>Popover Edit</TableHead>
           <TableHead>Edit</TableHead>
           <TableHead>Remove</TableHead>
         </TableRow>
@@ -41,6 +53,14 @@ export default function OrdersTableClient({ orders: initialOrders }) {
             <TableCell>{order.identifier}</TableCell>
             <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
             <TableCell>{new Date(order.updatedAt).toLocaleDateString()}</TableCell>
+            <TableCell>
+            <Popover>
+              <PopoverTrigger>Open</PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <EditOrderForm order={order} onUpdated={handleOrderUpdated} />
+              </PopoverContent>
+            </Popover>
+            </TableCell>        
             <TableCell>
               <Button variant="outline" asChild>
                 <Link href={`/orders/edit/${order.id}`}>Edit Order</Link>

@@ -65,7 +65,6 @@ export default function EditOrder() {
   useEffect(() => {
       async function fetchOrder() {
           // const result = await fetch(`/api/orders/edit/${orderId}/`);
-          
           // const data = await result.json();
 
           const data = await getOrder(orderId);
