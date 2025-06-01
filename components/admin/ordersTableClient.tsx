@@ -18,8 +18,9 @@ export default function OrdersTableClient({ orders: initialOrders }) {
   const [onUpdated, setOnUpdated] = useState(false);
 
   const reloadOrders = useCallback(async () => {
-    const res = await fetch("/api/orders");
+    const res = await fetch("/api/getOrders/");
     const data = await res.json();
+    console.log("Reloading orders:", data);
     setOrders(data);
   }, []);
 
@@ -57,7 +58,7 @@ export default function OrdersTableClient({ orders: initialOrders }) {
             <Popover>
               <PopoverTrigger>Open</PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <EditOrderForm order={order} onUpdated={handleOrderUpdated} />
+                <EditOrderForm order={order} onUpdated={reloadOrders} />
               </PopoverContent>
             </Popover>
             </TableCell>        
